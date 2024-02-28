@@ -2,6 +2,7 @@
 #define _FRAME_H
 
 #include "dolphin.h"
+#include "xlObject.h"
 
 // __anon_0x23B04
 typedef struct Viewport {
@@ -310,5 +311,7 @@ s32 frameDrawLine_C2T0(struct Frame* pFrame, struct Primitive* pPrimitive);
 s32 frameDrawLine_C0T2(struct Frame* pFrame, struct Primitive* pPrimitive);
 s32 frameDrawLine_C1T2(struct Frame* pFrame, struct Primitive* pPrimitive);
 s32 frameDrawLine_C2T2(struct Frame* pFrame, struct Primitive* pPrimitive);
+
+extern _XL_OBJECTTYPE gClassFrame;
 
 #endif
