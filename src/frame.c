@@ -389,7 +389,139 @@ const f32 D_80135F7C = 0.25999999046325684;
 const f32 D_80135F80 = 8.4399995803833;
 const f64 D_80135F88 = 8.44;
 
-#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
+//#pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Zelda1.s")
+s32 frameDrawSetupFog_Zelda1(Frame* pFrame) {
+    enum _GXFogType nFogType;
+    f32 temp_f3;
+    f32 dplane;
+    f32 dplane_2;
+    f32 dplane_3;
+    f32 dplane_4;
+    f32 temp_f6;
+    f32 temp_f6_2;
+    f32 temp_f7;
+    f32 temp_f7_2;
+    f32 rFarScale;
+    f32 rFarScale_2;
+    f32 rFarScale_3;
+    f32 rFarScale_4;
+    f32 rNear;
+    f32 var_f1;
+    f32 rFar;
+    f32 var_f2_2;
+    f32 rFogNear;
+    f32 rFogFar;
+    f32 rOffset;
+    f32 rOffset_2;
+    f32 rMaximum;
+    f32 rMaximum_2;
+    s32 temp_r0_2;
+    s32 iHint;
+    u32 temp_r0;
+    u32 temp_r4_2;
+
+    /*
+      uStack_4 = (int)(short)((uint)*(undefined4 *)(param_1 + 0x90) >> 0x10) ^ 0x80000000;
+      uStack_c = (int)(short)*(undefined4 *)(param_1 + 0x90) ^ 0x80000000;
+      dVar10 = (double)(float)((double)CONCAT44(0x43300000,uStack_4) - @2851);
+      dVar11 = (double)(float)((double)CONCAT44(0x43300000,uStack_c) - @2851);
+      fVar2 = @3237;
+      fVar1 = @6254;
+
+    */
+    
+    temp_f6 = (s16) pFrame->aMode[0] ^ 0x80000000;
+    temp_f7 = (s16) (pFrame->aMode[0] >> 0x10) ^ 0x80000000;
+    iHint = pFrame->iHintProjection;
+    if (iHint != -1U) {
+        rFar = pFrame->matrixHint[iHint].rClipFar;
+        rNear = pFrame->matrixHint[iHint].rClipNear * -1 ;
+    } else {
+        rFar = 32000.0;
+        rNear = 1.0;
+    }
+    if (temp_f6 == 0) {
+        GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000, pFrame->aColor[0]);
+    } else {
+        if (temp_f7 == temp_f6) {
+            nFogType = GX_FOG_LIN;
+            rFogNear = 500;
+            rFogFar = 1000;
+            var_f1 = rFogNear * (1 - (temp_f7 / temp_f6));
+            var_f2_2 = (D_80135F30 / temp_f6) + var_f1;
+        } else if ((D_80135F34 == temp_f7) && (D_80135F38 == temp_f6) && (D_80135F3C == rFar)) {
+            temp_f6_2 = rFar - rNear;
+            rFogNear = rNear;
+            rFogFar = rFar;
+            var_f1 = (D_80135F40 * temp_f6_2) + rNear;
+            nFogType = GX_FOG_EXP;
+            var_f2_2 = (D_80135F44 * temp_f6_2) + rNear;
+        } else if ((D_80135F48 == temp_f7) && (D_80135F4C == temp_f6) && (D_80135F00 == rFar)) {
+            dplane = rFar - rNear;
+            rFogNear = rNear;
+            nFogType = GX_FOG_EXP;
+            rFogFar = rFar;
+            var_f1 = (D_80135ED8 * dplane) + rNear;
+            var_f2_2 = dplane + rNear;
+        } else {
+            temp_r0_2 = gpSystem->eTypeROM;
+            if ((temp_r0_2 == 5) && (D_80135F50 == temp_f7) && (D_80135F54 == temp_f6) && (D_80135F00 == rFar)) {
+                dplane_2 = rFar - rNear;
+                rFogNear = rNear;
+                nFogType = GX_FOG_EXP;
+                rFogFar = rFar;
+                var_f1 = (D_80135F58 * dplane_2) + rNear;
+                var_f2_2 = dplane_2 + rNear;
+            } else if ((temp_r0_2 == 5) && (D_80135F5C == temp_f7) && (D_80135F60 == temp_f6) && (D_80135F00 == rFar)) {
+                dplane_3 = rFar - rNear;
+                rFogNear = rNear;
+                nFogType = GX_FOG_EXP;
+                rFogFar = rFar;
+                var_f1 = (D_80135F58 * dplane_3) + rNear;
+                var_f2_2 = dplane_3 + rNear;
+            } else {
+                dplane_4 = rFar - rNear;
+                temp_f3 = -((temp_f7 * (D_80135F30 / temp_f6) * D_80135F64) - 500);
+                if (temp_f3 <= D_80135F68) {
+                    rOffset = 0.0f;
+                    rMaximum = D_80135F6C;
+                } else {
+                    temp_f7_2 = (temp_f3 - D_80135F68) / D_80135F70;
+                    rMaximum = (temp_f7_2 * (temp_f7_2 * (D_80135F78 * temp_f7_2 * temp_f7_2))) + D_80135F74;
+                    rOffset = temp_f7_2 * (temp_f7_2 * (D_80135F7C * temp_f7_2 * temp_f7_2));
+                }
+                rFarScale = 1 - (rFar / D_80135F00);
+                rFarScale_2 = rFarScale * rFarScale;
+                rFarScale_3 = rFarScale_2 * rFarScale_2;
+                rFarScale_4 = rFarScale_3 * rFarScale_3;
+                rMaximum_2 = rMaximum * ((rFarScale_4 * D_80135F80) + 1);
+                if (rMaximum_2 > 1) {
+                    rMaximum_2 = 1;
+                }
+                rOffset_2 = rOffset * ((f32) ((f64) (rNear * rNear * (D_80135ED8 * rFarScale_4)) * D_80135F88) + 1);
+                if (rOffset_2 > 1) {
+                    rOffset_2 = 1;
+                }
+                if (rOffset_2 > rMaximum_2) {
+                    rOffset_2 = rMaximum_2;
+                }
+                rFogNear = rNear;
+                nFogType = GX_FOG_EXP;
+                rFogFar = rFar;
+                var_f1 = (rOffset_2 * dplane_4) + rNear;
+                var_f2_2 = (rMaximum_2 * dplane_4) + rNear;
+            }
+        }
+        temp_r4_2 = pFrame->aMode[4];
+        if (((u32) ((temp_r4_2 >> 0x1AU) & 3) == 1) || ((u32) (temp_r4_2 >> 0x1EU) == 3) || ((u32) ((temp_r4_2 >> 0x16U) & 3) == 3)) {
+            GXSetFog(nFogType, var_f1, var_f2_2, rFogNear, rFogFar, pFrame->aColor[0]);
+        } else {
+            GXSetFog(GX_FOG_NONE, 0.0f, 0.0f, 0.0f, 1000, pFrame->aColor[0]);
+        }
+    }
+    return 1;
+}
+
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawSetupFog_Default.s")
 
@@ -428,8 +560,6 @@ const f64 D_80135F88 = 8.44;
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_C3T3.s")
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawTriangle_Setup.s")
-<<<<<<< Updated upstream
-=======
 /*s32 frameDrawTriangle_Setup(Frame* pFrame, Primitive* pPrimitive) {
     s32 bFlag;
     s32 nColors;
@@ -452,7 +582,6 @@ const f64 D_80135F88 = 8.44;
     }
     return 1;
 }*/
->>>>>>> Stashed changes
 
 #pragma GLOBAL_ASM("asm/non_matchings/frame/frameDrawLine_C0T0.s")
 

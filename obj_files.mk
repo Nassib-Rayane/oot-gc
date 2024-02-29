@@ -17,7 +17,7 @@ O_FILES :=                                  \
     $(BUILD_DIR)/src/mcardGCN.o             \
     $(BUILD_DIR)/src/codeGCN.o              \
     $(BUILD_DIR)/src/soundGCN.o             \
-    $(BUILD_DIR)/asm/frame.o                \
+    $(BUILD_DIR)/src/frame.o                \
     $(BUILD_DIR)/src/system.o               \
     $(BUILD_DIR)/src/cpu.o                  \
     $(BUILD_DIR)/src/pif.o                  \

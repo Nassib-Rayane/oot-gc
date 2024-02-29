@@ -3,6 +3,7 @@
 
 #include "dolphin.h"
 #include "xlObject.h"
+#include "system.h"
 
 // __anon_0x23B04
 typedef struct Viewport {
@@ -180,7 +181,7 @@ typedef struct Frame {
     /* 0x00120 */ s32 nWidthLine;
     /* 0x00124 */ f32 rDepth;
     /* 0x00128 */ f32 rDelta;
-    /* 0x0012C */ s32 (*aDraw[4])(void*, void*);
+    /* 0x0012C */ s32 (*aDraw[4])(struct Frame*, struct Primitive*);
     /* 0x0013C */ s32 nCountLight;
     /* 0x00140 */ struct Light aLight[8];
     /* 0x00320 */ struct LookAt lookAt;
@@ -222,7 +223,7 @@ typedef struct Frame {
     /* 0x3C520 */ f32 aMatrixModel[10][4][4];
     /* 0x3C7A0 */ f32 matrixProjection[4][4];
     /* 0x3C7E0 */ f32 matrixProjectionExtra[4][4];
-    /* 0x3C820 */ struct MatrixHint MatrixHint[64];
+    /* 0x3C820 */ struct MatrixHint matrixHint[64];
     /* 0x3D120 */ u8 primLODmin;
     /* 0x3D121 */ u8 primLODfrac;
     /* 0x3D122 */ u8 lastTile;
@@ -251,6 +252,8 @@ typedef enum ColorHeat {
     FRT_COLD = 0,
     FRT_WARM = 1,
 } ColorHeat;
+
+extern System* gpSystem;
 
 // __anon_0x26C3F
 typedef enum FLTType {
